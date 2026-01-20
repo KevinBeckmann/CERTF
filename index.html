@@ -236,12 +236,173 @@
             border: 2px solid rgba(255,255,255,0.2);
         }
 
+        /* Estilos para o Template de Excelência */
+        .certificate.excellence {
+            background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
+            padding: 30px;
+            width: 900px;
+            height: auto;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+
+        .border-outer {
+            border: 2px solid #c5a059;
+            padding: 10px;
+            height: 100%;
+        }
+
+        .border-inner {
+            border: 5px double #c5a059;
+            padding: 60px 50px 100px 50px;
+            text-align: center;
+            position: relative;
+        }
+
+        .excellence-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 52px;
+            margin: 0;
+            color: #2c2c2c;
+            letter-spacing: 2px;
+        }
+
+        .divider {
+            width: 120px;
+            height: 2px;
+            background: #c5a059;
+            margin: 15px auto;
+        }
+
+        .excellence-subtitle {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 20px;
+            color: #666;
+            margin-top: 30px;
+        }
+
+        .excellence-name {
+            font-size: 40px;
+            font-weight: 600;
+            color: #8e6d2f;
+            margin: 25px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: inline-block;
+            padding: 0 30px 5px 30px;
+        }
+
+        .excellence-description {
+            font-size: 17px;
+            line-height: 1.8;
+            max-width: 650px;
+            margin: 0 auto;
+            color: #444;
+        }
+
+        .seal-container {
+            position: absolute;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .gold-seal {
+            width: 110px;
+            height: 110px;
+            background: radial-gradient(circle, #e2c99d 0%, #c5a059 50%, #8e6d2f 100%);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .seal-content {
+            border: 2px solid rgba(255,255,255,0.4);
+            width: 85%;
+            height: 85%;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Playfair Display', serif;
+            font-weight: bold;
+            color: #4a3a00;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.5), -1px -1px 0px rgba(0,0,0,0.5);
+            text-align: center;
+            overflow: visible;
+            white-space: normal;
+        }
+
+        .large {
+            font-size: 12px;
+        }
+
+        .small {
+            font-size: 7px;
+            line-height: 1;
+            margin-top: 1px;
+        }
+
+        .ribbon {
+            width: 35px;
+            height: 70px;
+            background: #8b0000;
+            position: absolute;
+            top: 80px;
+            z-index: -1;
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 85%, 0% 100%);
+        }
+
+        .ribbon-left { transform: rotate(15deg) translateX(-25px); }
+        .ribbon-right { transform: rotate(-15deg) translateX(25px); }
+
+        .excellence-footer {
+            margin-top: 130px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            position: relative;
+        }
+
+        .footer-item {
+            width: 280px;
+            text-align: center;
+        }
+
+        .sig-line {
+            border-top: 1.5px solid #2c2c2c;
+            margin-bottom: 8px;
+        }
+
+        .label-text {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #555;
+        }
+
+        .value-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 17px;
+            margin-bottom: 8px;
+            color: #222;
+        }
+
         /* Regras de Impressão */
         @media print {
             .admin-panel { display: none; }
             .preview-area { padding: 0; background: none; }
             body { background: none; }
             .certificate { box-shadow: none; border: none; }
+            .certificate.excellence { -webkit-print-color-adjust: exact; }
         }
     </style>
 </head>
@@ -249,6 +410,14 @@
 
     <div class="admin-panel">
         <h2>Painel | Aliencell</h2>
+
+        <div class="form-group">
+            <label>Modelo do Certificado</label>
+            <select id="certTemplate" onchange="updateCert()">
+                <option value="padrao">Padrão</option>
+                <option value="excelencia">Excelência</option>
+            </select>
+        </div>
         
         <div class="form-group">
             <label>Formato do Certificado</label>
@@ -359,15 +528,42 @@
             </label>
         </div>
 
-        <div class="form-group">
-            <label>Texto do Certificado (Use &lt;b&gt; para negrito)</label>
-            <textarea id="inputText" rows="12" oninput="updateCert()">concluiu com êxito o treinamento avançado em <b>Manutenção e Reparo de Ecossistema Apple</b>, abrangendo diagnóstico de hardware, micr7iossoldagem e software iOS/macOS.
+        <!-- Campos específicos para Padrão -->
+        <div id="padraoFields">
+            <div class="form-group">
+                <label>Texto do Certificado (Use &lt;b&gt; para negrito)</label>
+                <textarea id="inputText" rows="12" oninput="updateCert()">concluiu com êxito o treinamento avançado em <b>Manutenção e Reparo de Ecossistema Apple</b>, abrangendo diagnóstico de hardw[...]
 
 Principais Competências Validadas:
 Reparo de Placas-mãe (Logic Boards) e análise de esquemáticos.
 Substituição de periféricos (Telas, Baterias e componentes técnicos).
 Diagnóstico avançado via software e restauração de sistemas.
 Protocolos de segurança ESD (Descarga Eletrostática).</textarea>
+            </div>
+        </div>
+
+        <!-- Campos específicos para Excelência -->
+        <div id="excelenciaFields" style="display: none;">
+            <div class="form-group">
+                <label>Título do Certificado</label>
+                <input type="text" id="inputTitleExcelencia" value="Certificado" oninput="updateCert()">
+            </div>
+            <div class="form-group">
+                <label>Subtítulo</label>
+                <input type="text" id="inputSubtitle" value="Este documento certifica solenemente que" oninput="updateCert()">
+            </div>
+            <div class="form-group">
+                <label>Nome do Curso/Treinamento</label>
+                <input type="text" id="inputCourse" value="[Nome do Curso ou Treinamento]" oninput="updateCert()">
+            </div>
+            <div class="form-group">
+                <label>Descrição (Use [curso] para substituir pelo nome do curso)</label>
+                <textarea id="inputDescription" rows="6" oninput="updateCert()">completou com sucesso todos os requisitos exigidos para a certificação de [curso], demonstrando elevado desempenho, competência técnica e compromisso inabalável com a excelência.</textarea>
+            </div>
+            <div class="form-group">
+                <label>Texto da Assinatura</label>
+                <input type="text" id="inputSignatureText" value="Assinado digitalmente" oninput="updateCert()">
+            </div>
         </div>
 
         <div class="form-group">
@@ -381,43 +577,20 @@ Protocolos de segurança ESD (Descarga Eletrostática).</textarea>
 
     <div class="preview-area">
         <div class="certificate" id="cert-content">
-            <div class="watermark"></div>
-            
-            <div class="cert-title" id="displayTitle">Certificado de Excelência Técnica</div>
-            
-            <p class="cert-subtitle">Certificamos que</p>
-            <div class="cert-name" id="displayName">John Appleman</div>
-            
-            <div class="cert-text" id="displayText">
-                concluiu com êxito o treinamento avançado em Manutenção e Reparo de Ecossistema Apple, abrangendo diagnóstico de hardware, <b>microssoldagem</b> e software iOS/macOS.
-            </div>
-
-            <div class="topics-heading">Principais Competências Validadas:</div>
-            <ul class="topics-list" id="topicsList">
-                <li>Reparo de Placas-mãe (Logic Boards) e análise de esquemáticos.</li>
-                <li>Substituição de periféricos (Telas, Baterias e componentes técnicos).</li>
-                <li>Diagnóstico avançado via software e restauração de sistemas.</li>
-                <li>Protocolos de segurança ESD (Descarga Eletrostática).</li>
-            </ul>
-
-            <div class="footer" id="footer">
-                <div style="font-size: 12px;" id="displayDate">Data de Emissão: 15 de Março de 2026</div>
-                
-                <div class="signature-box" id="signatureBox">
-                    <div class="signature-font">Instrutor Técnico</div>
-                    <div style="font-size: 10px; text-transform: uppercase;">Assinatura</div>
-                </div>
-
-                <div class="seal" id="seal">
-                    ALIENCELL<br>EXCELLENCE<br>APPLE
-                </div>
-            </div>
+            <!-- Conteúdo será gerado pelo JavaScript -->
         </div>
     </div>
 
     <script>
         function updateCert() {
-            // Atualiza formato
+            const template = document.getElementById('certTemplate').value;
+            const certContent = document.getElementById('cert-content');
+
+            // Mostra/esconde campos específicos
+            document.getElementById('padraoFields').style.display = template === 'padrao' ? 'block' : 'none';
+            document.getElementById('excelenciaFields').style.display = template === 'excelencia' ? 'block' : 'none';
+
+            // Atualiza formato (aplica a ambos)
             const format = document.getElementById('certFormat').value;
             let width, height;
             if (format === 'A4') {
@@ -435,86 +608,128 @@ Protocolos de segurança ESD (Descarga Eletrostática).</textarea>
             }
             document.documentElement.style.setProperty('--print-width', width);
             document.documentElement.style.setProperty('--print-height', height);
-
-            // Mostra/esconde campos customizados
             document.getElementById('customSize').style.display = format === 'Custom' ? 'block' : 'none';
 
-            // Atualiza o nome
-            document.getElementById('displayName').innerText = document.getElementById('inputName').value;
-            
-            // Processa o texto principal
-            const fullText = document.getElementById('inputText').value;
-            const lines = fullText.split('\n').map(line => line.trim()).filter(line => line);
-            
-            let mainText = '';
-            let competencies = [];
-            let inCompetencies = false;
-            
-            for (let line of lines) {
-                if (line === 'Principais Competências Validadas:') {
-                    inCompetencies = true;
-                    continue;
-                }
-                if (inCompetencies) {
-                    competencies.push(line);
-                } else {
-                    mainText += line + ' ';
-                }
-            }
-            
-            document.getElementById('displayText').innerHTML = mainText.trim();
-            
-            // Atualiza tópicos
-            const topicsList = document.getElementById('topicsList');
-            topicsList.innerHTML = '';
-            competencies.forEach(comp => {
-                if (comp) {
-                    const li = document.createElement('li');
-                    li.innerHTML = comp;
-                    topicsList.appendChild(li);
-                }
-            });
-            
-            // Atualiza a data
-            document.getElementById('displayDate').innerText = "Data de Emissão: " + document.getElementById('inputDate').value;
-
-            // Atualiza fontes
+            // Atualiza fontes (aplica a ambos onde relevante)
             const titleFont = document.getElementById('titleFont').value;
             const nameFont = document.getElementById('nameFont').value;
             const textFont = document.getElementById('textFont').value;
-
             document.documentElement.style.setProperty('--title-font-family', titleFont + ', sans-serif');
             document.documentElement.style.setProperty('--name-font-family', nameFont + ', sans-serif');
             document.documentElement.style.setProperty('--text-font-family', textFont + ', sans-serif');
 
-            // Atualiza espaçamentos
+            // Atualiza espaçamentos e alinhamentos (aplica ao texto)
             const letterSpacing = document.getElementById('letterSpacing').value;
             const wordSpacing = document.getElementById('wordSpacing').value;
             document.documentElement.style.setProperty('--text-letter-spacing', letterSpacing);
             document.documentElement.style.setProperty('--text-word-spacing', wordSpacing);
-
-            // Atualiza alinhamentos
             const textAlign = document.getElementById('textAlign').value;
             document.documentElement.style.setProperty('--text-align', textAlign);
-
             const listAlign = document.getElementById('listAlign').value;
             document.documentElement.style.setProperty('--list-align', listAlign);
 
-            // Mostra/oculta elementos do footer
             const showSeal = document.getElementById('showSeal').checked;
             const showSignature = document.getElementById('showSignature').checked;
             const showDate = document.getElementById('showDate').checked;
 
-            document.getElementById('seal').style.display = showSeal ? 'flex' : 'none';
-            document.getElementById('signatureBox').style.display = showSignature ? 'block' : 'none';
-            document.getElementById('displayDate').style.display = showDate ? 'block' : 'none';
+            if (template === 'padrao') {
+                // Remove classe de excelência
+                certContent.classList.remove('excellence');
 
-            // Centraliza se assinatura e data estiverem ocultas
-            const footer = document.getElementById('footer');
-            if (!showSignature && !showDate) {
-                footer.classList.add('center');
-            } else {
-                footer.classList.remove('center');
+                // Gera conteúdo padrão
+                const name = document.getElementById('inputName').value;
+                const date = document.getElementById('inputDate').value;
+                const fullText = document.getElementById('inputText').value;
+                const lines = fullText.split('\n').map(line => line.trim()).filter(line => line);
+                let mainText = '';
+                let competencies = [];
+                let inCompetencies = false;
+                for (let line of lines) {
+                    if (line === 'Principais Competências Validadas:') {
+                        inCompetencies = true;
+                        continue;
+                    }
+                    if (inCompetencies) {
+                        competencies.push(line);
+                    } else {
+                        mainText += line + ' ';
+                    }
+                }
+
+                certContent.innerHTML = `
+                    <div class="watermark"></div>
+                    <div class="cert-title">Certificado de Excelência Técnica</div>
+                    <p class="cert-subtitle">Certificamos que</p>
+                    <div class="cert-name">${name.toUpperCase()}</div>
+                    <div class="cert-text">${mainText.trim()}</div>
+                    <div class="topics-heading">Principais Competências Validadas:</div>
+                    <ul class="topics-list">${competencies.map(comp => `<li>${comp}</li>`).join('')}</ul>
+                    <div class="footer" id="footer">
+                        <div style="font-size: 12px;" id="displayDate" style="display: ${showDate ? 'block' : 'none'}">Data de Emissão: ${date}</div>
+                        <div class="signature-box" id="signatureBox" style="display: ${showSignature ? 'block' : 'none'}">
+                            <div class="signature-font">Instrutor Técnico</div>
+                            <div style="font-size: 10px; text-transform: uppercase;">Assinatura</div>
+                        </div>
+                        <div class="seal" id="seal" style="display: ${showSeal ? 'flex' : 'none'}">ALIENCELL<br>EXCELLENCE<br>APPLE</div>
+                    </div>
+                `;
+            } else if (template === 'excelencia') {
+                // Adiciona classe de excelência
+                certContent.classList.add('excellence');
+
+                // Gera conteúdo de excelência
+                const title = document.getElementById('inputTitleExcelencia').value;
+                const subtitle = document.getElementById('inputSubtitle').value;
+                const name = document.getElementById('inputName').value;
+                const course = document.getElementById('inputCourse').value;
+                const description = document.getElementById('inputDescription').value.replace(/\[curso\]/g, '<strong>' + course + '</strong>');
+                const signatureText = document.getElementById('inputSignatureText').value;
+                const date = document.getElementById('inputDate').value;
+
+                certContent.innerHTML = `
+                    <div class="border-outer">
+                        <div class="border-inner">
+                            <h1 class="excellence-title">${title}</h1>
+                            <div class="divider"></div>
+                            <p style="letter-spacing: 8px; font-weight: 300; margin-top: -5px; font-size: 14px;">DE EXCELÊNCIA E MÉRITO</p>
+                            <p class="excellence-subtitle">${subtitle}</p>
+                            <div class="excellence-name">${name}</div>
+                            <p class="excellence-description">${description}</p>
+                            <div class="seal-container" id="sealContainer" style="display: ${showSeal ? 'flex' : 'none'}">
+                                <div class="ribbon ribbon-left"></div>
+                                <div class="ribbon ribbon-right"></div>
+                                <div class="gold-seal">
+                                    <div class="seal-content">
+                                        <div class="large">ALIENCELL</div>
+                                        <div class="small">REPAROS AVANÇADOS APPLE</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="excellence-footer">
+                                <div class="footer-item date-side" style="display: ${showDate ? 'block' : 'none'}">
+                                    <div class="value-text">${date}</div>
+                                    <div class="sig-line"></div>
+                                    <div class="label-text">Data de Emissão</div>
+                                </div>
+                                <div class="footer-item sign-side" style="display: ${showSignature ? 'block' : 'none'}">
+                                    <div class="value-text" style="font-style: italic; color: #777;">${signatureText}</div>
+                                    <div class="sig-line"></div>
+                                    <div class="label-text">Assinatura</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Centraliza footer padrão se necessário
+            if (template === 'padrao') {
+                const footer = document.getElementById('footer');
+                if (!showSignature && !showDate) {
+                    footer.classList.add('center');
+                } else {
+                    footer.classList.remove('center');
+                }
             }
         }
 
