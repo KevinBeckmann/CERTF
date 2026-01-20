@@ -59,6 +59,21 @@
         }
         .form-row > * { flex: 1; }
 
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #bdc3c7;
+        }
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
         .btn-print {
             width: 100%;
             padding: 15px;
@@ -177,6 +192,10 @@
             justify-content: space-between;
             align-items: flex-end;
             padding: 0 20px;
+        }
+
+        .footer.center {
+            justify-content: center;
         }
 
         .signature-box { border-top: 1px solid #333; width: 200px; padding-top: 10px; }
@@ -305,6 +324,18 @@
             </select>
         </div>
 
+        <div class="checkbox-group">
+            <label>
+                <input type="checkbox" id="showSeal" checked onchange="updateCert()"> Mostrar Selo
+            </label>
+            <label>
+                <input type="checkbox" id="showSignature" checked onchange="updateCert()"> Mostrar Assinatura
+            </label>
+            <label>
+                <input type="checkbox" id="showDate" checked onchange="updateCert()"> Mostrar Data
+            </label>
+        </div>
+
         <div class="form-group">
             <label>Texto do Certificado (Use &lt;b&gt; para negrito)</label>
             <textarea id="inputText" rows="12" oninput="updateCert()">concluiu com êxito o treinamento avançado em Manutenção e Reparo de Ecossistema Apple, abrangendo diagnóstico de hardware, <b>microssoldagem</b> e software iOS/macOS.
@@ -346,15 +377,15 @@ Protocolos de segurança ESD (Descarga Eletrostática).</textarea>
                 <li>Protocolos de segurança ESD (Descarga Eletrostática).</li>
             </ul>
 
-            <div class="footer">
+            <div class="footer" id="footer">
                 <div style="font-size: 12px;" id="displayDate">Data de Emissão: 15 de Março de 2026</div>
                 
-                <div class="signature-box">
+                <div class="signature-box" id="signatureBox">
                     <div class="signature-font">Instrutor Técnico</div>
                     <div style="font-size: 10px; text-transform: uppercase;">Assinatura</div>
                 </div>
 
-                <div class="seal">
+                <div class="seal" id="seal">
                     ALIENCELL<br>EXCELLENCE<br>APPLE
                 </div>
             </div>
@@ -423,6 +454,23 @@ Protocolos de segurança ESD (Descarga Eletrostática).</textarea>
 
             const listAlign = document.getElementById('listAlign').value;
             document.documentElement.style.setProperty('--list-align', listAlign);
+
+            // Mostra/oculta elementos do footer
+            const showSeal = document.getElementById('showSeal').checked;
+            const showSignature = document.getElementById('showSignature').checked;
+            const showDate = document.getElementById('showDate').checked;
+
+            document.getElementById('seal').style.display = showSeal ? 'flex' : 'none';
+            document.getElementById('signatureBox').style.display = showSignature ? 'block' : 'none';
+            document.getElementById('displayDate').style.display = showDate ? 'block' : 'none';
+
+            // Centraliza se assinatura e data estiverem ocultas
+            const footer = document.getElementById('footer');
+            if (!showSignature && !showDate) {
+                footer.classList.add('center');
+            } else {
+                footer.classList.remove('center');
+            }
         }
 
         // Inicializa
