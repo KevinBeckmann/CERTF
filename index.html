@@ -8,8 +8,8 @@
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Dancing+Script&family=Roboto:wght@400;700&family=Playfair+Display:wght@400;700&display=swap');
 
         :root {
-            --print-width: 800px;
-            --print-height: 1000px;
+            --print-width: 210mm;
+            --print-height: 297mm;
             --text-letter-spacing: 0px;
             --text-word-spacing: 0px;
         }
@@ -24,7 +24,7 @@
 
         /* Painel de Controle (Esquerda) */
         .admin-panel {
-            width: 500px; /* Aumentado para acomodar novos controles */
+            width: 500px;
             padding: 30px;
             background-color: #1a252f;
             height: 100vh;
@@ -155,7 +155,7 @@
             font-size: 16px;
             line-height: 1.8;
             max-width: 600px;
-            margin: 0 auto 40px; /* Espaço adicionado entre texto e lista */
+            margin: 0 auto 40px;
             white-space: pre-wrap;
             font-family: var(--text-font-family, 'Montserrat', sans-serif);
             text-align: var(--text-align, center);
@@ -249,6 +249,29 @@
 
     <div class="admin-panel">
         <h2>Gerador Appleman</h2>
+        
+        <div class="form-group">
+            <label>Formato do Certificado</label>
+            <select id="certFormat" onchange="updateCert()">
+                <option value="A4">A4 (210mm x 297mm)</option>
+                <option value="Letter">Carta (8.5in x 11in)</option>
+                <option value="Legal">Ofício (8.5in x 14in)</option>
+                <option value="Custom">Personalizado</option>
+            </select>
+        </div>
+
+        <div class="form-group" id="customSize" style="display: none;">
+            <div class="form-row">
+                <div>
+                    <label>Largura (mm)</label>
+                    <input type="number" id="customWidth" value="210" onchange="updateCert()">
+                </div>
+                <div>
+                    <label>Altura (mm)</label>
+                    <input type="number" id="customHeight" value="297" onchange="updateCert()">
+                </div>
+            </div>
+        </div>
         
         <div class="form-group">
             <label>Nome do Aluno</label>
@@ -394,6 +417,28 @@ Protocolos de segurança ESD (Descarga Eletrostática).</textarea>
 
     <script>
         function updateCert() {
+            // Atualiza formato
+            const format = document.getElementById('certFormat').value;
+            let width, height;
+            if (format === 'A4') {
+                width = '210mm';
+                height = '297mm';
+            } else if (format === 'Letter') {
+                width = '8.5in';
+                height = '11in';
+            } else if (format === 'Legal') {
+                width = '8.5in';
+                height = '14in';
+            } else if (format === 'Custom') {
+                width = document.getElementById('customWidth').value + 'mm';
+                height = document.getElementById('customHeight').value + 'mm';
+            }
+            document.documentElement.style.setProperty('--print-width', width);
+            document.documentElement.style.setProperty('--print-height', height);
+
+            // Mostra/esconde campos customizados
+            document.getElementById('customSize').style.display = format === 'Custom' ? 'block' : 'none';
+
             // Atualiza o nome
             document.getElementById('displayName').innerText = document.getElementById('inputName').value;
             
