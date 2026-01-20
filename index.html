@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Certificados ALIENCELL</title>
+    <title>Gerador de Certificados Técnicos</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Dancing+Script&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Dancing+Script&family=Roboto:wght@400;700&family=Playfair+Display:wght@400;700&display=swap');
 
         :root {
             --print-width: 800px;
             --print-height: 1000px;
+            --text-letter-spacing: 0px;
+            --text-word-spacing: 0px;
         }
 
         body {
@@ -20,9 +22,9 @@
             color: white;
         }
 
-        /* Painel de Controle */
+        /* Painel de Controle (Esquerda) */
         .admin-panel {
-            width: 350px;
+            width: 500px; /* Aumentado para acomodar novos controles */
             padding: 30px;
             background-color: #1a252f;
             height: 100vh;
@@ -30,14 +32,13 @@
             position: sticky;
             top: 0;
             overflow-y: auto;
-            z-index: 10;
         }
 
-        h2 { border-bottom: 2px solid #f1c40f; padding-bottom: 10px; margin-top: 0; color: #f1c40f; }
+        h2 { border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 0; }
 
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-size: 14px; color: #bdc3c7; }
-        input, textarea {
+        input, textarea, select {
             width: 100%;
             padding: 10px;
             background: #2c3e50;
@@ -45,13 +46,24 @@
             color: white;
             border-radius: 4px;
             box-sizing: border-box;
+            font-family: inherit;
         }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+        .form-row > * { flex: 1; }
 
         .btn-print {
             width: 100%;
             padding: 15px;
-            background-color: #f1c40f;
-            color: #1a252f;
+            background-color: #27ae60;
+            color: white;
             border: none;
             border-radius: 5px;
             font-weight: bold;
@@ -59,9 +71,9 @@
             font-size: 16px;
             transition: 0.3s;
         }
-        .btn-print:hover { background-color: #f39c12; }
+        .btn-print:hover { background-color: #2ecc71; }
 
-        /* Área do Certificado */
+        /* Área de Visualização (Direita) */
         .preview-area {
             flex-grow: 1;
             display: flex;
@@ -71,6 +83,7 @@
             background-color: #34495e;
         }
 
+        /* Estilo do Certificado (Baseado na Imagem Original) */
         .certificate {
             width: var(--print-width);
             height: var(--print-height);
@@ -81,7 +94,7 @@
             color: #333;
             text-align: center;
             box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            font-family: 'Montserrat', sans-serif;
+            font-family: var(--cert-font-family, 'Montserrat', sans-serif);
         }
 
         .certificate::before {
@@ -105,23 +118,55 @@
             font-weight: 700;
             margin-top: 100px;
             letter-spacing: 2px;
+            font-family: var(--title-font-family, 'Montserrat', sans-serif);
         }
 
-        .cert-subtitle { font-size: 18px; margin-top: 40px; }
+        .cert-subtitle { 
+            font-size: 18px; 
+            margin-top: 40px; 
+            font-family: var(--subtitle-font-family, 'Montserrat', sans-serif);
+        }
         
         .cert-name {
             font-size: 42px;
             font-weight: 700;
             text-transform: uppercase;
             margin: 20px 0 40px;
+            border-bottom: none;
+            font-family: var(--name-font-family, 'Montserrat', sans-serif);
         }
 
         .cert-text {
             font-size: 16px;
             line-height: 1.8;
             max-width: 600px;
-            margin: 0 auto;
+            margin: 0 auto 40px; /* Espaço adicionado entre texto e lista */
             white-space: pre-wrap;
+            font-family: var(--text-font-family, 'Montserrat', sans-serif);
+            text-align: var(--text-align, center);
+            letter-spacing: var(--text-letter-spacing);
+            word-spacing: var(--text-word-spacing);
+        }
+
+        .topics-heading {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0 0 10px;
+            text-align: center;
+            font-family: var(--text-font-family, 'Montserrat', sans-serif);
+        }
+
+        .topics-list {
+            list-style-type: disc;
+            text-align: var(--list-align, left);
+            margin: 10px auto 20px;
+            max-width: 600px;
+            padding-left: 40px;
+            font-size: 16px;
+            line-height: 1.8;
+            font-family: var(--text-font-family, 'Montserrat', sans-serif);
+            letter-spacing: var(--text-letter-spacing);
+            word-spacing: var(--text-word-spacing);
         }
 
         .footer {
@@ -135,21 +180,44 @@
         }
 
         .signature-box { border-top: 1px solid #333; width: 200px; padding-top: 10px; }
-        .signature-font { font-family: 'Dancing Script', cursive; font-size: 24px; }
+        .signature-font { 
+            font-family: 'Dancing Script', cursive; 
+            font-size: 24px; 
+            margin-bottom: -5px; 
+        }
 
-        /* Estilo do Selo Circular ALIENCELL */
-        .seal-container {
+        .seal {
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, #ffd700 0%, #ffed4e 30%, #ffd700 70%, #b8860b 100%);
+            border-radius: 50%;
+            border: 5px double #8a6d3b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #4a3a00;
+            box-shadow: 
+                0 4px 10px rgba(0,0,0,0.3),
+                inset 0 2px 4px rgba(255,255,255,0.5),
+                inset 0 -2px 4px rgba(0,0,0,0.5);
             position: relative;
-            width: 140px;
-            height: 140px;
+            text-align: center;
+            line-height: 1.2;
+            font-family: 'Playfair Display', serif;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
 
-        .seal-img {
-            width: 140px;
-            height: auto;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+        .seal::before {
+            content: "";
+            position: absolute;
+            top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.2);
         }
 
+        /* Regras de Impressão */
         @media print {
             .admin-panel { display: none; }
             .preview-area { padding: 0; background: none; }
@@ -161,7 +229,7 @@
 <body>
 
     <div class="admin-panel">
-        <h2>Painel ALIENCELL</h2>
+        <h2>Gerador Appleman</h2>
         
         <div class="form-group">
             <label>Nome do Aluno</label>
@@ -169,8 +237,83 @@
         </div>
 
         <div class="form-group">
-            <label>Texto do Certificado</label>
-            <textarea id="inputText" rows="6" oninput="updateCert()">concluiu com êxito o treinamento avançado em Manutenção e Reparo de Ecossistema Apple, abrangendo diagnóstico de hardware[...]</textarea>
+            <label>Fonte do Título</label>
+            <select id="titleFont" onchange="updateCert()">
+                <option value="Montserrat">Montserrat</option>
+                <option value="Roboto">Roboto</option>
+                <option value="Playfair Display">Playfair Display</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Fonte do Nome</label>
+            <select id="nameFont" onchange="updateCert()">
+                <option value="Montserrat">Montserrat</option>
+                <option value="Roboto">Roboto</option>
+                <option value="Playfair Display">Playfair Display</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Fonte do Texto</label>
+            <select id="textFont" onchange="updateCert()">
+                <option value="Montserrat">Montserrat</option>
+                <option value="Roboto">Roboto</option>
+                <option value="Playfair Display">Playfair Display</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <div class="form-row">
+                <div>
+                    <label>Espaçamento entre letras</label>
+                    <select id="letterSpacing" onchange="updateCert()">
+                        <option value="0px">Normal</option>
+                        <option value="1px">1px</option>
+                        <option value="2px">2px</option>
+                        <option value="3px">3px</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Espaçamento entre palavras</label>
+                    <select id="wordSpacing" onchange="updateCert()">
+                        <option value="0px">Normal</option>
+                        <option value="2px">2px</option>
+                        <option value="4px">4px</option>
+                        <option value="6px">6px</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Alinhamento do Texto</label>
+            <select id="textAlign" onchange="updateCert()">
+                <option value="center">Centralizado</option>
+                <option value="left">Esquerda</option>
+                <option value="right">Direita</option>
+                <option value="justify">Justificado</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Alinhamento da Lista</label>
+            <select id="listAlign" onchange="updateCert()">
+                <option value="left">Esquerda</option>
+                <option value="center">Centralizado</option>
+                <option value="justify">Justificado</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Texto do Certificado (Use &lt;b&gt; para negrito)</label>
+            <textarea id="inputText" rows="12" oninput="updateCert()">concluiu com êxito o treinamento avançado em Manutenção e Reparo de Ecossistema Apple, abrangendo diagnóstico de hardware, <b>microssoldagem</b> e software iOS/macOS.
+
+Principais Competências Validadas:
+Reparo de Placas-mãe (Logic Boards) e análise de esquemáticos.
+Substituição de periféricos (Telas, Baterias e componentes técnicos).
+Diagnóstico avançado via software e restauração de sistemas.
+Protocolos de segurança ESD (Descarga Eletrostática).</textarea>
         </div>
 
         <div class="form-group">
@@ -178,32 +321,41 @@
             <input type="text" id="inputDate" value="15 de Março de 2026" oninput="updateCert()">
         </div>
 
-        <button class="btn-print" onclick="window.print()">Imprimir / Salvar PDF</button>
+        <button class="btn-print" onclick="window.print()">Gerar PDF / Imprimir</button>
+        <p style="font-size: 11px; color: #7f8c8d; margin-top: 20px;">Dica: Na tela de impressão, selecione "Salvar como PDF". Use &lt;b&gt;tags&lt;/b&gt; para texto em negrito.</p>
     </div>
 
     <div class="preview-area">
         <div class="certificate" id="cert-content">
             <div class="watermark"></div>
             
-            <div class="cert-title">Certificado de Excelência Técnica</div>
+            <div class="cert-title" id="displayTitle">Certificado de Excelência Técnica</div>
             
             <p class="cert-subtitle">Certificamos que</p>
             <div class="cert-name" id="displayName">John Appleman</div>
             
             <div class="cert-text" id="displayText">
-                concluiu com êxito o treinamento avançado em Manutenção e Reparo de Ecossistema Apple, abrangendo diagnóstico de hardware, microssoldagem e software iOS/macOS.
+                concluiu com êxito o treinamento avançado em Manutenção e Reparo de Ecossistema Apple, abrangendo diagnóstico de hardware, <b>microssoldagem</b> e software iOS/macOS.
             </div>
 
+            <div class="topics-heading">Principais Competências Validadas:</div>
+            <ul class="topics-list" id="topicsList">
+                <li>Reparo de Placas-mãe (Logic Boards) e análise de esquemáticos.</li>
+                <li>Substituição de periféricos (Telas, Baterias e componentes técnicos).</li>
+                <li>Diagnóstico avançado via software e restauração de sistemas.</li>
+                <li>Protocolos de segurança ESD (Descarga Eletrostática).</li>
+            </ul>
+
             <div class="footer">
-                <div style="font-size: 12px; text-align: left;" id="displayDate">Data de Emissão: 15 de Março de 2026</div>
+                <div style="font-size: 12px;" id="displayDate">Data de Emissão: 15 de Março de 2026</div>
                 
                 <div class="signature-box">
                     <div class="signature-font">Instrutor Técnico</div>
                     <div style="font-size: 10px; text-transform: uppercase;">Assinatura</div>
                 </div>
 
-                <div class="seal-container">
-                    <img class="seal-img" src="imagem.png" alt="Selo ALIENCELL">
+                <div class="seal">
+                    ALIENCELL<br>EXCELLENCE<br>APPLE
                 </div>
             </div>
         </div>
@@ -211,10 +363,70 @@
 
     <script>
         function updateCert() {
+            // Atualiza o nome
             document.getElementById('displayName').innerText = document.getElementById('inputName').value;
-            document.getElementById('displayText').innerText = document.getElementById('inputText').value;
+            
+            // Processa o texto principal
+            const fullText = document.getElementById('inputText').value;
+            const lines = fullText.split('\n').map(line => line.trim()).filter(line => line);
+            
+            let mainText = '';
+            let competencies = [];
+            let inCompetencies = false;
+            
+            for (let line of lines) {
+                if (line === 'Principais Competências Validadas:') {
+                    inCompetencies = true;
+                    continue;
+                }
+                if (inCompetencies) {
+                    competencies.push(line);
+                } else {
+                    mainText += line + ' ';
+                }
+            }
+            
+            document.getElementById('displayText').innerHTML = mainText.trim();
+            
+            // Atualiza tópicos
+            const topicsList = document.getElementById('topicsList');
+            topicsList.innerHTML = '';
+            competencies.forEach(comp => {
+                if (comp) {
+                    const li = document.createElement('li');
+                    li.innerHTML = comp;
+                    topicsList.appendChild(li);
+                }
+            });
+            
+            // Atualiza a data
             document.getElementById('displayDate').innerText = "Data de Emissão: " + document.getElementById('inputDate').value;
+
+            // Atualiza fontes
+            const titleFont = document.getElementById('titleFont').value;
+            const nameFont = document.getElementById('nameFont').value;
+            const textFont = document.getElementById('textFont').value;
+
+            document.documentElement.style.setProperty('--title-font-family', titleFont + ', sans-serif');
+            document.documentElement.style.setProperty('--name-font-family', nameFont + ', sans-serif');
+            document.documentElement.style.setProperty('--text-font-family', textFont + ', sans-serif');
+
+            // Atualiza espaçamentos
+            const letterSpacing = document.getElementById('letterSpacing').value;
+            const wordSpacing = document.getElementById('wordSpacing').value;
+            document.documentElement.style.setProperty('--text-letter-spacing', letterSpacing);
+            document.documentElement.style.setProperty('--text-word-spacing', wordSpacing);
+
+            // Atualiza alinhamentos
+            const textAlign = document.getElementById('textAlign').value;
+            document.documentElement.style.setProperty('--text-align', textAlign);
+
+            const listAlign = document.getElementById('listAlign').value;
+            document.documentElement.style.setProperty('--list-align', listAlign);
         }
+
+        // Inicializa
+        updateCert();
     </script>
 </body>
 </html>
